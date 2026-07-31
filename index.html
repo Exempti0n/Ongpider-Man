@@ -2,689 +2,292 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#101936">
+<meta name="theme-color" content="#13234f">
 <title>옹파이더</title>
 <style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #101936;
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", system-ui, sans-serif;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-    overscroll-behavior: none;
-  }
-  canvas {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100dvh;
-    display: block;
-  }
-  #hud {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    padding:
-      calc(env(safe-area-inset-top) + 16px)
-      18px
-      calc(env(safe-area-inset-bottom) + 16px);
-    color: white;
-    text-shadow: 0 2px 6px rgba(0,0,0,.45);
-    z-index: 3;
-  }
-  #hudTop {
-    display: flex;
-    justify-content: space-between;
-    font-size: 20px;
-    font-weight: 900;
-  }
-  #tapHint {
-    position: absolute;
-    left: 50%;
-    bottom: calc(env(safe-area-inset-bottom) + 24px);
-    transform: translateX(-50%);
-    background: rgba(8, 12, 30, .78);
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 999px;
-    padding: 11px 16px;
-    font-weight: 900;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity .25s ease;
-  }
-  #overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding:
-      calc(env(safe-area-inset-top) + 20px)
-      22px
-      calc(env(safe-area-inset-bottom) + 20px);
-    background: linear-gradient(rgba(8,12,34,.2), rgba(6,9,24,.72));
-  }
-  .card {
-    width: min(430px, 92vw);
-    padding: 26px 22px;
-    border-radius: 26px;
-    text-align: center;
-    background: rgba(15, 21, 49, .9);
-    border: 1px solid rgba(255,255,255,.16);
-    box-shadow: 0 24px 70px rgba(0,0,0,.42);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  h1 { margin: 0 0 8px; font-size: 31px; }
-  #message {
-    margin: 0 0 20px;
-    opacity: .88;
-    line-height: 1.55;
-    font-size: 16px;
-  }
-  #start {
-    width: 100%;
-    border: 0;
-    border-radius: 18px;
-    padding: 15px 18px;
-    color: white;
-    background: linear-gradient(135deg, #ef4e58, #b81d3d);
-    box-shadow: 0 10px 26px rgba(207,34,66,.35);
-    font-size: 18px;
-    font-weight: 900;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  #mini {
-    margin-top: 13px;
-    font-size: 13px;
-    line-height: 1.45;
-    opacity: .68;
-  }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;
+  background:#13234f;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+  touch-action:none;-webkit-user-select:none;user-select:none;overscroll-behavior:none
+}
+#game{
+  position:fixed;inset:0;overflow:hidden;
+  background:linear-gradient(#18346e 0%,#32255f 62%,#a33f55 100%)
+}
+.star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;opacity:.75}
+#moon{
+  position:absolute;right:13%;top:17%;width:76px;height:76px;
+  border-radius:50%;background:#fff1b7;box-shadow:0 0 20px rgba(255,241,183,.12)
+}
+#city{position:absolute;left:0;right:0;bottom:0;height:37%}
+.building{position:absolute;bottom:0;background:#1b2639;border-top:2px solid rgba(255,255,255,.04)}
+.window{position:absolute;width:6px;height:9px;background:#d5bd73;opacity:.85}
+#ground{position:absolute;left:0;right:0;bottom:0;height:18px;background:#090f22}
+
+#player{
+  position:absolute;width:74px;height:91px;left:25%;top:43%;
+  transform:translate(-50%,-50%);will-change:transform,left,top;z-index:4
+}
+.tail{
+  position:absolute;width:41px;height:30px;left:-23px;top:44px;
+  border-left:11px solid #85807c;border-bottom:11px solid #85807c;
+  border-radius:0 0 0 28px;transform:rotate(12deg)
+}
+.body{
+  position:absolute;width:52px;height:57px;left:12px;top:33px;
+  border-radius:48% 48% 43% 43%;background:#183563
+}
+.suit{
+  position:absolute;width:49px;height:39px;left:13px;top:35px;
+  border-radius:50%;background:#d83e48
+}
+.leg{position:absolute;width:13px;height:34px;top:62px;background:#183563;border-radius:9px}
+.leg.l{left:19px;transform:rotate(28deg)} .leg.r{right:15px;transform:rotate(-28deg)}
+.arm{position:absolute;width:13px;height:39px;top:40px;background:#d83e48;border-radius:9px}
+.arm.l{left:1px;transform:rotate(55deg)} .arm.r{right:-1px;transform:rotate(-58deg)}
+.head{
+  position:absolute;width:61px;height:57px;left:7px;top:0;
+  border-radius:50%;background:#908b88;z-index:3
+}
+.ear{position:absolute;width:23px;height:29px;top:-12px;background:#15171c;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.ear.l{left:2px;transform:rotate(-10deg)} .ear.r{right:2px;transform:rotate(10deg)}
+.ear:after{content:"";position:absolute;left:7px;top:9px;width:10px;height:14px;background:#72584c;clip-path:inherit}
+.eye{position:absolute;top:22px;width:6px;height:6px;background:#111;border-radius:50%}
+.eye.l{left:17px}.eye.r{right:17px}
+.nose{position:absolute;left:27px;top:32px;width:8px;height:6px;background:#111;clip-path:polygon(50% 100%,0 0,100% 0)}
+.mouth{position:absolute;left:25px;top:40px;width:12px;height:2px;background:#111;border-radius:2px}
+.whisker{position:absolute;width:21px;height:2px;background:#161616;top:37px}
+.whisker.l1{left:-9px;transform:rotate(7deg)} .whisker.l2{left:-9px;top:43px;transform:rotate(-5deg)}
+.whisker.r1{right:-9px;transform:rotate(-7deg)} .whisker.r2{right:-9px;top:43px;transform:rotate(5deg)}
+.web{
+  position:absolute;height:3px;background:#fff;transform-origin:left center;
+  z-index:3;display:none;box-shadow:0 0 4px rgba(255,255,255,.7)
+}
+.drone{
+  position:absolute;width:52px;height:52px;border-radius:50%;
+  background:#282e3d;border:5px solid #697285;z-index:3;will-change:transform
+}
+.drone:before,.drone:after{
+  content:"";position:absolute;left:-16px;right:-16px;top:20px;height:5px;background:#697285
+}
+.drone:after{transform:rotate(90deg)}
+.drone i{
+  position:absolute;width:13px;height:13px;left:50%;top:50%;
+  transform:translate(-50%,-50%);border-radius:50%;background:#ef4d58;
+  box-shadow:0 0 10px #ef4d58
+}
+.fish{
+  position:absolute;width:31px;height:20px;border-radius:50%;background:#ffd769;z-index:3
+}
+.fish:before{
+  content:"";position:absolute;left:-13px;top:2px;
+  border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:15px solid #ffd769
+}
+.fish:after{
+  content:"";position:absolute;right:6px;top:5px;width:4px;height:4px;border-radius:50%;background:#4d392b
+}
+.particle{
+  position:absolute;width:7px;height:7px;border-radius:50%;background:#ffd769;z-index:6;pointer-events:none
+}
+#hud{
+  position:fixed;z-index:10;left:0;right:0;top:0;
+  padding:calc(env(safe-area-inset-top) + 15px) 18px 0;
+  display:flex;justify-content:space-between;font-size:20px;font-weight:900;
+  text-shadow:0 2px 5px rgba(0,0,0,.45);pointer-events:none
+}
+#hint{
+  position:fixed;z-index:10;left:50%;bottom:calc(env(safe-area-inset-bottom) + 23px);
+  transform:translateX(-50%);padding:11px 16px;border-radius:999px;
+  background:rgba(7,11,29,.78);border:1px solid rgba(255,255,255,.2);
+  font-weight:900;white-space:nowrap;opacity:0;transition:opacity .25s;pointer-events:none
+}
+#overlay{
+  position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 20px) 22px calc(env(safe-area-inset-bottom) + 20px);
+  background:linear-gradient(rgba(6,10,27,.16),rgba(5,8,22,.76))
+}
+.card{
+  width:min(420px,92vw);padding:27px 22px;text-align:center;border-radius:26px;
+  background:rgba(13,19,45,.92);border:1px solid rgba(255,255,255,.17);
+  box-shadow:0 25px 70px rgba(0,0,0,.45)
+}
+h1{font-size:31px;margin:0 0 8px}
+#message{line-height:1.55;margin:0 0 20px;opacity:.88}
+button{
+  width:100%;border:0;border-radius:18px;padding:15px;color:#fff;
+  background:linear-gradient(135deg,#ef4e58,#b61d3d);font-size:18px;font-weight:900;
+  -webkit-appearance:none;appearance:none
+}
+.small{font-size:13px;opacity:.67;margin-top:13px}
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-
-<div id="hud">
-  <div id="hudTop">
-    <div>점수 <span id="score">0</span></div>
-    <div>최고 <span id="best">0</span></div>
+<div id="game">
+  <div id="moon"></div>
+  <div id="city"></div>
+  <div id="ground"></div>
+  <div id="web" class="web"></div>
+  <div id="player">
+    <div class="tail"></div><div class="body"></div><div class="suit"></div>
+    <div class="leg l"></div><div class="leg r"></div>
+    <div class="arm l"></div><div class="arm r"></div>
+    <div class="head">
+      <div class="ear l"></div><div class="ear r"></div>
+      <div class="eye l"></div><div class="eye r"></div>
+      <div class="nose"></div><div class="mouth"></div>
+      <div class="whisker l1"></div><div class="whisker l2"></div>
+      <div class="whisker r1"></div><div class="whisker r2"></div>
+    </div>
   </div>
-  <div id="tapHint">화면을 누르면 상승 · 떼면 하강</div>
 </div>
+
+<div id="hud"><div>점수 <span id="score">0</span></div><div>최고 <span id="best">0</span></div></div>
+<div id="hint">화면 누르기 = 상승 · 떼기 = 하강</div>
 
 <div id="overlay">
   <div class="card">
     <h1 id="title">🐾 옹파이더</h1>
-    <p id="message">도시를 날아다니며 생선을 먹고<br>드론을 피하세요.</p>
+    <p id="message">생선을 모으고 드론을 피하세요.</p>
     <button id="start" type="button">게임 시작</button>
-    <div id="mini">세로 화면 권장 · Safari 홈 화면 추가 가능</div>
+    <div class="small">iPhone Safari 전용 안정화 버전</div>
   </div>
 </div>
 
 <script>
-(function () {
-  "use strict";
+(function(){
+"use strict";
+var game=document.getElementById("game");
+var city=document.getElementById("city");
+var player=document.getElementById("player");
+var web=document.getElementById("web");
+var overlay=document.getElementById("overlay");
+var start=document.getElementById("start");
+var title=document.getElementById("title");
+var message=document.getElementById("message");
+var scoreEl=document.getElementById("score");
+var bestEl=document.getElementById("best");
+var hint=document.getElementById("hint");
 
-  var canvas = document.getElementById("game");
-  var ctx = canvas.getContext("2d", { alpha: false });
-  var scoreNode = document.getElementById("score");
-  var bestNode = document.getElementById("best");
-  var overlay = document.getElementById("overlay");
-  var titleNode = document.getElementById("title");
-  var messageNode = document.getElementById("message");
-  var startButton = document.getElementById("start");
-  var tapHint = document.getElementById("tapHint");
+var W=window.innerWidth,H=window.innerHeight;
+var running=false,pressed=false,last=0,raf=0;
+var y=H*.44,vy=0,score=0,time=0,speed=250;
+var obstacleDelay=900,fishDelay=700,lastObstacle=0,lastFish=0;
+var objects=[];
+var best=parseInt(localStorage.getItem("ong_dom_best")||"0",10)||0;
+bestEl.textContent=best;
 
-  var W = 390, H = 844, DPR = 1;
-  var running = false;
-  var pressing = false;
-  var rafId = 0;
-  var lastTime = 0;
-  var elapsed = 0;
-  var score = 0;
-  var speed = 235;
-  var obstacleTimer = 1.1;
-  var fishTimer = .9;
-  var best = parseInt(localStorage.getItem("ongpider_best") || "0", 10) || 0;
-
-  var cat = { x: 110, y: 360, vy: 0, r: 25, rot: 0 };
-  var obstacles = [];
-  var fishes = [];
-  var particles = [];
-  var stars = [];
-  var buildings = [];
-
-  bestNode.textContent = String(best);
-
-  function viewportHeight() {
-    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+function scene(){
+  W=window.innerWidth; H=window.innerHeight;
+  document.querySelectorAll(".star").forEach(function(n){n.remove()});
+  for(var i=0;i<46;i++){
+    var s=document.createElement("i");s.className="star";
+    s.style.left=(Math.random()*100)+"%";s.style.top=(Math.random()*70)+"%";
+    s.style.opacity=(.35+Math.random()*.6);s.style.transform="scale("+(0.6+Math.random()*1.2)+")";
+    game.appendChild(s);
   }
-
-  function resize() {
-    W = Math.max(320, window.innerWidth || 390);
-    H = Math.max(500, viewportHeight() || window.innerHeight || 844);
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-
-    canvas.width = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
-
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    buildScene();
-
-    if (!running) {
-      cat.x = W * .27;
-      cat.y = H * .46;
-      draw();
-    }
-  }
-
-  function rnd(min, max) {
-    return min + Math.random() * (max - min);
-  }
-
-  function buildScene() {
-    stars = [];
-    var count = Math.max(35, Math.floor(W * H / 8500));
-    for (var i = 0; i < count; i++) {
-      stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H * .66,
-        s: rnd(.6, 1.9),
-        a: rnd(.35, .95)
-      });
-    }
-
-    buildings = [];
-    var x = -10;
-    while (x < W + 120) {
-      var bw = rnd(54, 105);
-      buildings.push({
-        x: x,
-        w: bw,
-        h: rnd(H * .17, H * .40),
-        shade: Math.floor(rnd(18, 39))
-      });
-      x += bw + rnd(7, 15);
-    }
-  }
-
-  function resetGame() {
-    running = true;
-    pressing = false;
-    elapsed = 0;
-    score = 0;
-    speed = 235;
-    obstacleTimer = .9;
-    fishTimer = 1.0;
-    obstacles = [];
-    fishes = [];
-    particles = [];
-    cat.x = W * .27;
-    cat.y = H * .46;
-    cat.vy = 0;
-    cat.rot = 0;
-    scoreNode.textContent = "0";
-    overlay.style.display = "none";
-    tapHint.style.opacity = "1";
-    window.setTimeout(function () {
-      tapHint.style.opacity = "0";
-    }, 1600);
-
-    cancelAnimationFrame(rafId);
-    lastTime = performance.now();
-    rafId = requestAnimationFrame(loop);
-  }
-
-  function endGame() {
-    if (!running) return;
-    running = false;
-    pressing = false;
-
-    burst(cat.x, cat.y, 20, true);
-
-    var finalScore = Math.floor(score);
-    if (finalScore > best) {
-      best = finalScore;
-      localStorage.setItem("ongpider_best", String(best));
-      bestNode.textContent = String(best);
-    }
-
-    draw();
-
-    window.setTimeout(function () {
-      titleNode.textContent = "앗! 옹기 추락";
-      messageNode.innerHTML = "점수 <b>" + finalScore + "</b>점<br>다시 출동 준비 완료!";
-      startButton.textContent = "다시 하기";
-      overlay.style.display = "flex";
-    }, 250);
-  }
-
-  function spawnObstacle() {
-    obstacles.push({
-      x: W + 45,
-      y: rnd(H * .20, H * .76),
-      r: rnd(21, 29),
-      angle: rnd(0, Math.PI * 2),
-      spin: rnd(-2.2, 2.2),
-      pulse: rnd(0, Math.PI * 2)
-    });
-  }
-
-  function spawnFish() {
-    fishes.push({
-      x: W + 40,
-      y: rnd(H * .18, H * .78),
-      phase: rnd(0, Math.PI * 2),
-      got: false
-    });
-  }
-
-  function burst(x, y, count, hit) {
-    for (var i = 0; i < count; i++) {
-      particles.push({
-        x: x,
-        y: y,
-        vx: rnd(-135, 135),
-        vy: rnd(-165, 55),
-        t: 0,
-        life: rnd(.3, .75),
-        size: rnd(2, 5),
-        hit: hit
-      });
-    }
-  }
-
-  function update(dt) {
-    elapsed += dt;
-    speed = Math.min(390, 235 + elapsed * 5);
-    score += dt * 10;
-    scoreNode.textContent = String(Math.floor(score));
-
-    var accel = pressing ? -480 : 560;
-    cat.vy += accel * dt;
-    if (pressing && cat.vy > 100) cat.vy -= 300 * dt;
-    cat.vy = Math.max(-430, Math.min(520, cat.vy));
-    cat.y += cat.vy * dt;
-    cat.rot = Math.max(-.5, Math.min(.75, cat.vy / 650));
-
-    obstacleTimer -= dt;
-    if (obstacleTimer <= 0) {
-      spawnObstacle();
-      obstacleTimer = rnd(1.15, 1.65) * (250 / speed);
-    }
-
-    fishTimer -= dt;
-    if (fishTimer <= 0) {
-      spawnFish();
-      fishTimer = rnd(.85, 1.45);
-    }
-
-    for (var b = 0; b < buildings.length; b++) {
-      buildings[b].x -= speed * .13 * dt;
-    }
-    for (var k = 0; k < buildings.length; k++) {
-      var building = buildings[k];
-      if (building.x + building.w < -20) {
-        var maxX = 0;
-        for (var m = 0; m < buildings.length; m++) {
-          maxX = Math.max(maxX, buildings[m].x + buildings[m].w);
-        }
-        building.x = maxX + rnd(8, 16);
-        building.w = rnd(54, 105);
-        building.h = rnd(H * .17, H * .40);
-      }
-    }
-
-    for (var i = obstacles.length - 1; i >= 0; i--) {
-      var o = obstacles[i];
-      o.x -= speed * dt;
-      o.angle += o.spin * dt;
-      o.pulse += dt * 4;
-
-      var dx = o.x - cat.x;
-      var dy = o.y - cat.y;
-      var rr = o.r + cat.r * .72;
-      if (dx * dx + dy * dy < rr * rr) {
-        endGame();
-        return;
-      }
-      if (o.x < -70) obstacles.splice(i, 1);
-    }
-
-    for (var f = fishes.length - 1; f >= 0; f--) {
-      var fish = fishes[f];
-      fish.x -= speed * dt;
-      fish.phase += dt * 5;
-      var fy = fish.y + Math.sin(fish.phase) * 7;
-      var fdx = fish.x - cat.x;
-      var fdy = fy - cat.y;
-
-      if (!fish.got && fdx * fdx + fdy * fdy < 34 * 34) {
-        fish.got = true;
-        score += 75;
-        burst(fish.x, fy, 10, false);
-      }
-      if (fish.x < -45 || fish.got) fishes.splice(f, 1);
-    }
-
-    for (var p = particles.length - 1; p >= 0; p--) {
-      var part = particles[p];
-      part.t += dt;
-      part.x += part.vx * dt;
-      part.y += part.vy * dt;
-      part.vy += 400 * dt;
-      if (part.t >= part.life) particles.splice(p, 1);
-    }
-
-    if (cat.y < 20 || cat.y > H - 34) endGame();
-  }
-
-  function drawBackground() {
-    var grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, "#1d346c");
-    grad.addColorStop(.58, "#31275f");
-    grad.addColorStop(1, "#a83f55");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    for (var i = 0; i < stars.length; i++) {
-      var s = stars[i];
-      ctx.globalAlpha = s.a;
-      ctx.fillStyle = "#ffffff";
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.s, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    var moonR = Math.min(W, H) * .07;
-    ctx.fillStyle = "#fff2bd";
-    ctx.beginPath();
-    ctx.arc(W * .79, H * .18, moonR, 0, Math.PI * 2);
-    ctx.fill();
-
-    for (var b = 0; b < buildings.length; b++) {
-      var build = buildings[b];
-      var by = H - build.h;
-      ctx.fillStyle = "rgb(" + build.shade + "," + (build.shade + 7) + "," + (build.shade + 25) + ")";
-      ctx.fillRect(build.x, by, build.w, build.h);
-
-      var cols = Math.max(2, Math.floor(build.w / 20));
-      var rows = Math.floor(build.h / 26);
-      for (var iy = 0; iy < rows; iy++) {
-        for (var ix = 0; ix < cols; ix++) {
-          if (((ix * 5 + iy * 7 + Math.floor(build.x)) % 4) === 0) {
-            ctx.fillStyle = "rgba(255,222,132,.72)";
-            ctx.fillRect(build.x + 9 + ix * 18, by + 12 + iy * 24, 6, 9);
-          }
+  city.innerHTML="";
+  var x=0,n=0;
+  while(x<W+100){
+    var b=document.createElement("div");b.className="building";
+    var bw=55+Math.random()*70,bh=120+Math.random()*Math.max(120,H*.25);
+    b.style.left=x+"px";b.style.width=bw+"px";b.style.height=bh+"px";
+    for(var r=15;r<bh-15;r+=28){
+      for(var c=12;c<bw-8;c+=22){
+        if((r+c+n)%3===0){
+          var win=document.createElement("i");win.className="window";
+          win.style.left=c+"px";win.style.top=r+"px";b.appendChild(win);
         }
       }
     }
-
-    ctx.fillStyle = "#0b1023";
-    ctx.fillRect(0, H - 18, W, 18);
+    city.appendChild(b);x+=bw+8+Math.random()*15;n++;
   }
-
-  function drawWeb() {
-    if (!pressing || !running) return;
-    var ax = Math.min(W - 15, cat.x + W * .48);
-    var ay = Math.max(24, cat.y - H * .30);
-    ctx.strokeStyle = "rgba(255,255,255,.95)";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(cat.x + 14, cat.y - 7);
-    ctx.quadraticCurveTo((cat.x + ax) / 2, (cat.y + ay) / 2 - 24, ax, ay);
-    ctx.stroke();
+  if(!running){y=H*.44;renderPlayer()}
+}
+function renderPlayer(){
+  var angle=Math.max(-25,Math.min(35,vy/12));
+  player.style.left=(W*.26)+"px";
+  player.style.top=y+"px";
+  player.style.transform="translate(-50%,-50%) rotate("+angle+"deg)";
+  if(pressed&&running){
+    var px=W*.26+18,py=y-8,tx=W*.75,ty=Math.max(30,y-H*.29);
+    var dx=tx-px,dy=ty-py,len=Math.sqrt(dx*dx+dy*dy),ang=Math.atan2(dy,dx)*180/Math.PI;
+    web.style.display="block";web.style.left=px+"px";web.style.top=py+"px";
+    web.style.width=len+"px";web.style.transform="rotate("+ang+"deg)";
+  }else web.style.display="none";
+}
+function addDrone(){
+  var el=document.createElement("div");el.className="drone";el.innerHTML="<i></i>";
+  var o={type:"drone",el:el,x:W+60,y:80+Math.random()*(H-190),w:52,h:52,spin:0};
+  game.appendChild(el);objects.push(o)
+}
+function addFish(){
+  var el=document.createElement("div");el.className="fish";
+  var o={type:"fish",el:el,x:W+45,y:80+Math.random()*(H-180),w:31,h:20,t:Math.random()*6};
+  game.appendChild(el);objects.push(o)
+}
+function particles(x,y){
+  for(var i=0;i<8;i++){
+    var p=document.createElement("i");p.className="particle";game.appendChild(p);
+    var a=Math.random()*Math.PI*2,d=25+Math.random()*35;
+    p.style.left=x+"px";p.style.top=y+"px";
+    p.animate([{transform:"translate(0,0)",opacity:1},{transform:"translate("+Math.cos(a)*d+"px,"+Math.sin(a)*d+"px)",opacity:0}],{duration:450,fill:"forwards"});
+    setTimeout(function(n){return function(){n.remove()}}(p),480)
   }
-
-  function drawFish(fish) {
-    var y = fish.y + Math.sin(fish.phase) * 7;
-    ctx.save();
-    ctx.translate(fish.x, y);
-    ctx.fillStyle = "#ffd96a";
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 14, 9, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(-12, 0);
-    ctx.lineTo(-22, -8);
-    ctx.lineTo(-22, 8);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#4d392b";
-    ctx.beginPath();
-    ctx.arc(7, -2, 1.6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+}
+function reset(){
+  objects.forEach(function(o){o.el.remove()});objects=[];
+  running=true;pressed=false;y=H*.44;vy=0;score=0;time=0;speed=250;
+  lastObstacle=0;lastFish=0;scoreEl.textContent="0";
+  overlay.style.display="none";hint.style.opacity="1";
+  setTimeout(function(){hint.style.opacity="0"},1600);
+  cancelAnimationFrame(raf);last=performance.now();raf=requestAnimationFrame(loop)
+}
+function end(){
+  if(!running)return;running=false;pressed=false;web.style.display="none";
+  var final=Math.floor(score);
+  if(final>best){best=final;localStorage.setItem("ong_dom_best",best);bestEl.textContent=best}
+  title.textContent="앗! 옹기 추락";message.innerHTML="점수 <b>"+final+"</b>점<br>다시 출동 준비 완료!";
+  start.textContent="다시 하기";
+  setTimeout(function(){overlay.style.display="flex"},220)
+}
+function loop(now){
+  if(!running)return;
+  var dt=Math.min(.034,(now-last)/1000);last=now;time+=dt;
+  speed=Math.min(390,250+time*5);score+=dt*10;scoreEl.textContent=Math.floor(score);
+  vy+=(pressed?-520:590)*dt;vy=Math.max(-420,Math.min(520,vy));y+=vy*dt;
+  if(now-lastObstacle>obstacleDelay*(250/speed)){addDrone();lastObstacle=now;obstacleDelay=1050+Math.random()*450}
+  if(now-lastFish>fishDelay){addFish();lastFish=now;fishDelay=750+Math.random()*650}
+  var px=W*.26,py=y;
+  for(var i=objects.length-1;i>=0;i--){
+    var o=objects[i];o.x-=speed*dt;if(o.type==="fish")o.t+=dt*5;
+    var oy=o.y+(o.type==="fish"?Math.sin(o.t)*8:0);
+    o.el.style.transform="translate3d("+o.x+"px,"+oy+"px,0)"+(o.type==="drone"?" rotate("+(time*80)+"deg)":"");
+    var cx=o.x+o.w/2,cy=oy+o.h/2,dx=cx-px,dy=cy-py;
+    var rr=o.type==="drone"?42:34;
+    if(dx*dx+dy*dy<rr*rr){
+      if(o.type==="fish"){score+=75;particles(cx,cy);o.el.remove();objects.splice(i,1)}
+      else{end();return}
+    }else if(o.x<-80){o.el.remove();objects.splice(i,1)}
   }
-
-  function drawDrone(o) {
-    ctx.save();
-    ctx.translate(o.x, o.y);
-    ctx.rotate(o.angle);
-
-    ctx.strokeStyle = "#677084";
-    ctx.lineWidth = 5;
-    for (var i = 0; i < 4; i++) {
-      var a = i * Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(a) * o.r * .55, Math.sin(a) * o.r * .55);
-      ctx.lineTo(Math.cos(a) * (o.r + 14), Math.sin(a) * (o.r + 14));
-      ctx.stroke();
-    }
-
-    ctx.fillStyle = "#262b3a";
-    ctx.beginPath();
-    ctx.arc(0, 0, o.r, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#ef4d57";
-    ctx.beginPath();
-    ctx.arc(0, 0, 6 + Math.sin(o.pulse) * 1.3, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawCat() {
-    ctx.save();
-    ctx.translate(cat.x, cat.y);
-    ctx.rotate(cat.rot);
-
-    ctx.strokeStyle = "#7f7a77";
-    ctx.lineWidth = 10;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(-22, 13);
-    ctx.quadraticCurveTo(-44, 10, -39, -13);
-    ctx.stroke();
-
-    ctx.fillStyle = "#17315f";
-    ctx.beginPath();
-    ctx.ellipse(0, 17, 27, 31, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#da3e47";
-    ctx.beginPath();
-    ctx.ellipse(0, 5, 26, 21, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "#17315f";
-    ctx.lineWidth = 12;
-    ctx.beginPath();
-    ctx.moveTo(-13, 34);
-    ctx.lineTo(-25, 49);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(13, 34);
-    ctx.lineTo(26, 47);
-    ctx.stroke();
-
-    ctx.strokeStyle = "#da3e47";
-    ctx.beginPath();
-    ctx.moveTo(-19, 4);
-    ctx.lineTo(-37, 15);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(19, 4);
-    ctx.lineTo(38, -6);
-    ctx.stroke();
-
-    ctx.fillStyle = "#8f8a87";
-    ctx.beginPath();
-    ctx.arc(0, -24, 30, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#17181c";
-    ctx.beginPath();
-    ctx.moveTo(-23, -43);
-    ctx.lineTo(-16, -65);
-    ctx.lineTo(-4, -48);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(23, -43);
-    ctx.lineTo(16, -65);
-    ctx.lineTo(4, -48);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = "#695449";
-    ctx.beginPath();
-    ctx.moveTo(-18, -47);
-    ctx.lineTo(-15, -58);
-    ctx.lineTo(-9, -49);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(18, -47);
-    ctx.lineTo(15, -58);
-    ctx.lineTo(9, -49);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = "#111";
-    ctx.beginPath();
-    ctx.arc(-10, -26, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(10, -26, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(0, -18);
-    ctx.lineTo(-4, -13);
-    ctx.lineTo(4, -13);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-8, -9);
-    ctx.lineTo(8, -9);
-    ctx.stroke();
-
-    for (var side = -1; side <= 1; side += 2) {
-      for (var w = -1; w <= 1; w++) {
-        ctx.beginPath();
-        ctx.moveTo(side * 10, -10 + w * 4);
-        ctx.lineTo(side * 27, -13 + w * 5);
-        ctx.stroke();
-      }
-    }
-
-    ctx.restore();
-  }
-
-  function drawParticles() {
-    for (var i = 0; i < particles.length; i++) {
-      var p = particles[i];
-      var alpha = 1 - p.t / p.life;
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = p.hit ? "#ffffff" : "#ffd96a";
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function draw() {
-    drawBackground();
-
-    for (var i = 0; i < fishes.length; i++) drawFish(fishes[i]);
-    for (var j = 0; j < obstacles.length; j++) drawDrone(obstacles[j]);
-
-    drawWeb();
-    drawCat();
-    drawParticles();
-  }
-
-  function loop(now) {
-    if (!running) return;
-
-    var dt = Math.min(.032, Math.max(.001, (now - lastTime) / 1000));
-    lastTime = now;
-
-    update(dt);
-    draw();
-
-    if (running) rafId = requestAnimationFrame(loop);
-  }
-
-  function setPress(value, event) {
-    if (event && event.cancelable) event.preventDefault();
-    if (!running) return;
-    pressing = value;
-  }
-
-  startButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    resetGame();
-  }, false);
-
-  document.addEventListener("touchstart", function (e) {
-    if (running) setPress(true, e);
-  }, { passive: false });
-
-  document.addEventListener("touchend", function (e) {
-    setPress(false, e);
-  }, { passive: false });
-
-  document.addEventListener("touchcancel", function (e) {
-    setPress(false, e);
-  }, { passive: false });
-
-  document.addEventListener("mousedown", function (e) {
-    if (running) setPress(true, e);
-  }, false);
-
-  document.addEventListener("mouseup", function (e) {
-    setPress(false, e);
-  }, false);
-
-  window.addEventListener("resize", resize, false);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", resize, false);
-  }
-
-  resize();
-  draw();
+  renderPlayer();
+  if(y<28||y>H-45){end();return}
+  raf=requestAnimationFrame(loop)
+}
+function pressOn(e){if(e&&e.cancelable)e.preventDefault();if(running)pressed=true}
+function pressOff(e){if(e&&e.cancelable)e.preventDefault();pressed=false}
+start.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();reset()});
+game.addEventListener("touchstart",pressOn,{passive:false});
+game.addEventListener("touchend",pressOff,{passive:false});
+game.addEventListener("touchcancel",pressOff,{passive:false});
+game.addEventListener("pointerdown",pressOn);
+window.addEventListener("pointerup",pressOff);
+window.addEventListener("resize",scene);
+scene();renderPlayer();
 })();
 </script>
 </body>
