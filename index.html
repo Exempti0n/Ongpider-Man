@@ -50,20 +50,16 @@ html,body{
 .leg.l{left:19px;transform:rotate(28deg)} .leg.r{right:15px;transform:rotate(-28deg)}
 .arm{position:absolute;width:13px;height:39px;top:40px;background:#d83e48;border-radius:9px}
 .arm.l{left:1px;transform:rotate(55deg)} .arm.r{right:-1px;transform:rotate(-58deg)}
-.head{
-  position:absolute;width:61px;height:57px;left:7px;top:0;
-  border-radius:50%;background:#908b88;z-index:3
+.onggi-face{
+  position:absolute;
+  width:72px;
+  height:72px;
+  left:1px;
+  top:-10px;
+  z-index:5;
+  overflow:visible;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.15))
 }
-.ear{position:absolute;width:23px;height:29px;top:-12px;background:#15171c;clip-path:polygon(50% 0,100% 100%,0 100%)}
-.ear.l{left:2px;transform:rotate(-10deg)} .ear.r{right:2px;transform:rotate(10deg)}
-.ear:after{content:"";position:absolute;left:7px;top:9px;width:10px;height:14px;background:#72584c;clip-path:inherit}
-.eye{position:absolute;top:22px;width:6px;height:6px;background:#111;border-radius:50%}
-.eye.l{left:17px}.eye.r{right:17px}
-.nose{position:absolute;left:27px;top:32px;width:8px;height:6px;background:#111;clip-path:polygon(50% 100%,0 0,100% 0)}
-.mouth{position:absolute;left:25px;top:40px;width:12px;height:2px;background:#111;border-radius:2px}
-.whisker{position:absolute;width:21px;height:2px;background:#161616;top:37px}
-.whisker.l1{left:-9px;transform:rotate(7deg)} .whisker.l2{left:-9px;top:43px;transform:rotate(-5deg)}
-.whisker.r1{right:-9px;transform:rotate(-7deg)} .whisker.r2{right:-9px;top:43px;transform:rotate(5deg)}
 .web{
   position:absolute;height:3px;background:#fff;transform-origin:left center;
   z-index:3;display:none;box-shadow:0 0 4px rgba(255,255,255,.7)
@@ -136,13 +132,37 @@ button{
     <div class="tail"></div><div class="body"></div><div class="suit"></div>
     <div class="leg l"></div><div class="leg r"></div>
     <div class="arm l"></div><div class="arm r"></div>
-    <div class="head">
-      <div class="ear l"></div><div class="ear r"></div>
-      <div class="eye l"></div><div class="eye r"></div>
-      <div class="nose"></div><div class="mouth"></div>
-      <div class="whisker l1"></div><div class="whisker l2"></div>
-      <div class="whisker r1"></div><div class="whisker r2"></div>
-    </div>
+    <svg class="onggi-face" viewBox="0 0 100 100" aria-label="옹기 얼굴">
+      <!-- 검은 귀 -->
+      <path d="M19 34 L15 5 Q14 1 18 3 L39 22 Z" fill="#17191d"/>
+      <path d="M81 34 L85 5 Q86 1 82 3 L61 22 Z" fill="#17191d"/>
+
+      <!-- 갈색 귀 안쪽 -->
+      <path d="M22 25 L19 10 L34 23 Z" fill="#765b4d"/>
+      <path d="M78 25 L81 10 L66 23 Z" fill="#765b4d"/>
+
+      <!-- 동그란 회색 얼굴 -->
+      <ellipse cx="50" cy="54" rx="38" ry="35" fill="#98928f"/>
+      <ellipse cx="50" cy="57" rx="31" ry="27" fill="#a49f9c" opacity=".32"/>
+
+      <!-- 작은 점눈 -->
+      <circle cx="36" cy="49" r="3.4" fill="#111214"/>
+      <circle cx="64" cy="49" r="3.4" fill="#111214"/>
+
+      <!-- 코 -->
+      <path d="M50 57 L45.5 61 L54.5 61 Z" fill="#171719"/>
+
+      <!-- 일자 입 -->
+      <path d="M43 68 Q50 69 57 68" fill="none" stroke="#171719" stroke-width="2.7" stroke-linecap="round"/>
+
+      <!-- 수염 6가닥 -->
+      <path d="M37 62 L8 57" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M36 67 L6 67" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M37 72 L9 77" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M63 62 L92 57" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M64 67 L94 67" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M63 72 L91 77" stroke="#171719" stroke-width="2.1" stroke-linecap="round"/>
+    </svg>
   </div>
 </div>
 
